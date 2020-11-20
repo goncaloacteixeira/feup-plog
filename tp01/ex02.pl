@@ -42,3 +42,19 @@ gates(porto, 5).
 
 % a quipa vence quando um piloto da equipa vence
 equipaVenceu(E, C) :- venceu(P, C), equipa(E, P).
+
+
+% a - quem venceu corrida no Porto?
+% ?- venceu(X, porto). -> X = jones
+
+% b - qual equipa venceu no porto
+% ?- equipaVenceu(E, porto). -> E = matador
+
+% c - quais os pilotos que venceram mais de um circuito?
+% ?- venceu(P, C1), venceu(P, C2), C1 \== C2. -> P = mangold
+
+% d - que circuitos tem mais de 8 gates?
+% ?- gates(C, G), G > 8. C = istanbul
+
+% e - que pilotos não pilotam um Edge540?
+% ?- aviao(A, P), A \= edge540. A = lamb
