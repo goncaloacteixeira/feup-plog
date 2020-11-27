@@ -29,20 +29,20 @@ madeItThrough(Participant):-
   -Times        - Lista do tempo que o jurimember demorou até carregar no botão para o participante
   -Total        - Total de tempo na lista Times
 */
-juriTimes([], _, [], 0). % caso base para quando não existem mais participantes.
-juriTimes([Participant|Resto], JuriMember, [Tempo|RestoTempo], Total):-
-  juriTimes(Resto, JuriMember, RestoTempo, Total1),
-  performance(Participant, List),
-  nth1(JuriMember, List, Tempo),
-  Total is (Total1 + Tempo).
+juriTimes([], _, [], 0).
+juriTimes([P|Resto], JuriMember, [Time|Times], Total):-
+  juriTimes(Resto, JuriMember, Times, Total1),
+  performance(P, JuriTimes),
+  nth1(JuriMember, JuriTimes, Time),
+  Total is Time + Total1.
 
 % exercicio 3
 patientJuri(JuriMember):-
-  performance(X, List1),
-  nth1(JuriMember, List1, 120),
-  performance(Y, List2),
+  performance(X, JuriTimesX),
+  nth1(JuriMember, JuriTimesX, 120),
+  performance(Y, JuriTimesY),
   X \= Y,
-  nth1(JuriMember, List2, 120).
+  nth1(JuriMember, JuriTimesY, 120).
 
 % exercicio 4
 bestParticipant(P1, P2, P):-
@@ -69,28 +69,20 @@ allPerfs:-
 allPerfs.
 
 % exercicio 6
-nSuccessfulParticipants(T) :-
-  setof(
-    _Participant, 
-    (
-      performance(_Participant, TimesList),
-      no_click_of_button(TimesList)
-    ), 
-    Total),
-length(Total,T).
+nSuccessfulParticipants(T):-
+  setof(_P, (performance(_P, Times), no_button(Times)), Total),
+  length(Total, T).
 
-no_click_of_button([]).
-no_click_of_button([120|Tail]):- no_click_of_button(Tail).
+no_button([]).
+no_button([120|R]) :- no_button(R).
 
 % exercicio 7
 juriFans(JuriFansList):-
-	findall(
-    Participant-Juris, 
-    (
-      performance(Participant, Times),
-      findall(Juri, (nth1(Juri, Times, 120)), Juris)
-    ), 
-    JuriFansList).
+  findall(Participant-Juris,
+      (performance(Participant, Times),
+       findall(Juri, nth1(Juri, Times, 120), Juris)),
+       JuriFansList
+  ).
 
 % given
 eligibleOutcome(Id,Perf,TT):-
